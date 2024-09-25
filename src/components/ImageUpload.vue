@@ -4,6 +4,8 @@
     <input type="file" @change="onFileChange" class="file-input" />
     <button @click="uploadImage" class="upload-button">업로드</button>
     <p v-if="message" class="upload-message">{{ message }}</p>
+    <!-- 이미지 미리보기 -->
+    <img v-if="previewUrl" :src="previewUrl" class="image-preview" />
   </div>
 </template>
 
@@ -14,14 +16,21 @@ import { uploadImageToBackend } from "../services/api";
 export default defineComponent({
   data() {
     return {
-      selectedFile: null as File | null, // 파일 타입 명시
-      message: "" as string, // 문자열 타입 명시
+      selectedFile: null as File | null,
+      previewUrl: "" as string,
+      message: "" as string,
     };
   },
   methods: {
     onFileChange(event: Event) {
       const target = event.target as HTMLInputElement;
-      this.selectedFile = target.files ? target.files[0] : null; // 파일 선택 처리
+      this.selectedFile = target.files ? target.files[0] : null;
+
+      if (this.selectedFile) {
+        this.previewUrl = URL.createObjectURL(this.selectedFile);
+      } else {
+        this.previewUrl = "";
+      }
     },
     async uploadImage() {
       if (!this.selectedFile) {
@@ -30,7 +39,7 @@ export default defineComponent({
       }
       try {
         const response = await uploadImageToBackend(this.selectedFile);
-        this.message = response.data.message; // 백엔드에서 반환된 메시지 처리
+        this.message = response.data.message;
       } catch (error) {
         console.error("이미지 업로드 실패:", error);
         this.message = "이미지 업로드에 실패했습니다.";
@@ -50,7 +59,6 @@ export default defineComponent({
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 400px;
-  margin-top: 30%;
 }
 
 h2 {
@@ -88,5 +96,12 @@ h2 {
   margin-top: 15px;
   font-size: 0.9em;
   color: #d9534f;
+}
+
+.image-preview {
+  margin-top: 15px;
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
 }
 </style>
