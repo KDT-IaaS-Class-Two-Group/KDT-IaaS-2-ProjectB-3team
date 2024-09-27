@@ -16,14 +16,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-#app {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
-</style>
