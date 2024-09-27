@@ -10,6 +10,7 @@ export function handleFileChange(
   const target = event.target as HTMLInputElement;
   const file = target.files ? target.files[0] : null;
 
+  // 이미지 미리보기
   if (file && file.type.startsWith("image/")) {
     selectedFile.value = file;
     const reader = new FileReader();
