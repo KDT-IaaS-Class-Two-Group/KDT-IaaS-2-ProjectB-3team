@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import ImageUpload from "./components/ImageUpload.vue";
 
 export default defineComponent({
@@ -14,5 +14,23 @@ export default defineComponent({
   components: {
     ImageUpload,
   },
+  setup() {
+    onMounted(async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/ml", {
+          method: "POST",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        console.log("Data fetched successfully:", data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    });
+  },
 });
 </script>
+
