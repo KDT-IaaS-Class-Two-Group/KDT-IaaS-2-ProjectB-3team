@@ -69,22 +69,28 @@ export default defineComponent({
 
     const selectImage = (index: number) => {
       selectedImage.value = previewImages.value[index];
-      drawImageOnCropCanvas();
-    };
-    const drawImageOnCropCanvas = () => {
-      if (cropCanvasRef.value && selectedImage.value) {
-        const ctx = cropCanvasRef.value.getContext("2d");
-        const img = new Image();
-        img.src = selectedImage.value;
 
-        img.onload = () => {
-          if (cropCanvasRef.value) {
-            // null 체크 추가
-            cropCanvasRef.value.width = canvasWidth;
-            cropCanvasRef.value.height = canvasHeight;
-            ctx?.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-          }
-        };
+      // 이미지 객체 생성 후 onload에서 drawImageOnCropCanvas 실행
+      const img = new Image();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      img.src = selectedImage.value!;
+      img.onload = () => {
+        drawImageOnCropCanvas(img);
+      };
+    };
+
+    const drawImageOnCropCanvas = (img: HTMLImageElement) => {
+      if (cropCanvasRef.value) {
+        const ctx = cropCanvasRef.value.getContext("2d");
+        if (ctx) {
+          // 캔버스 초기화 및 이미지 그리기
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight); // 기존 캔버스 내용 지우기
+          cropCanvasRef.value.width = canvasWidth;
+          cropCanvasRef.value.height = canvasHeight;
+          ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+        } else {
+          message.value = "캔버스의 컨텍스트를 가져오지 못했습니다.";
+        }
       }
     };
 
@@ -92,15 +98,14 @@ export default defineComponent({
       if (cropCanvasRef.value) {
         const ctx = cropCanvasRef.value.getContext("2d");
         if (ctx) {
-          // ctx가 null이 아닐 때만 실행
           const croppedImage = cropCanvasRef.value.toDataURL(); // 잘라낸 이미지
           previewImages.value = [croppedImage]; // 미리보기 이미지 업데이트
           selectedImage.value = null; // 선택된 이미지 초기화
         } else {
-          message.value = "캔버스의 컨텍스트를 가져오는 데 실패했습니다."; // 에러 메시지 처리
+          message.value = "캔버스의 컨텍스트를 가져오는 데 실패했습니다.";
         }
       } else {
-        message.value = "캔버스가 초기화되지 않았습니다."; // 추가 에러 메시지 처리
+        message.value = "캔버스가 초기화되지 않았습니다.";
       }
     };
 
