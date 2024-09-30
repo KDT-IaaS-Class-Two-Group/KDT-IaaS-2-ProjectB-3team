@@ -26,10 +26,9 @@
 
     <canvas
       v-if="selectedImage"
-      ref="cropCanvas"
       :width="canvasWidth"
       :height="canvasHeight"
-      class="border border-gray-300 mb-4 max-w-2xl"
+      class="cropCanvasClass border border-gray-300 mb-4 max-w-2xl"
     ></canvas>
 
     <button
@@ -63,44 +62,48 @@ export default defineComponent({
     const previewImages: Ref<string[]> = ref([]);
     const selectedImage: Ref<string | null> = ref(null);
     const message: Ref<string> = ref("");
-    const cropCanvasRef = ref<HTMLCanvasElement | null>(null); // null 타입 포함
-    const canvasWidth = 800; // 캔버스 너비
-    const canvasHeight = 600; // 캔버스 높이
+    const canvasWidth = 800;
+    const canvasHeight = 600;
 
-    const selectImage = (index: number) => {
-      selectedImage.value = previewImages.value[index];
-
-      // 이미지 객체 생성 후 onload에서 drawImageOnCropCanvas 실행
-      const img = new Image();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      img.src = selectedImage.value!;
-      img.onload = () => {
-        drawImageOnCropCanvas(img);
-      };
+    const selectImage = async (index: number) => {
+      if (previewImages.value[index]) {
+        selectedImage.value = previewImages.value[index];
+        console.log("Selected Image:", selectedImage.value);
+        await loadImageToCanvas(selectedImage.value);
+      }
     };
 
-    const drawImageOnCropCanvas = (img: HTMLImageElement) => {
-      if (cropCanvasRef.value) {
-        const ctx = cropCanvasRef.value.getContext("2d");
+    const loadImageToCanvas = async (imageSrc: string) => {
+      const cropCanvas = document.querySelector(
+        ".cropCanvasClass"
+      ) as HTMLCanvasElement; // HTMLCanvasElement로 타입 단언
+      if (cropCanvas) {
+        cropCanvas.width = canvasWidth;
+        cropCanvas.height = canvasHeight;
+        const ctx = cropCanvas.getContext("2d");
+
         if (ctx) {
-          // 캔버스 초기화 및 이미지 그리기
-          ctx.clearRect(0, 0, canvasWidth, canvasHeight); // 기존 캔버스 내용 지우기
-          cropCanvasRef.value.width = canvasWidth;
-          cropCanvasRef.value.height = canvasHeight;
-          ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-        } else {
-          message.value = "캔버스의 컨텍스트를 가져오지 못했습니다.";
+          const img = new Image();
+          img.src = imageSrc;
+
+          img.onload = () => {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+          };
         }
       }
     };
 
     const cropImage = () => {
-      if (cropCanvasRef.value) {
-        const ctx = cropCanvasRef.value.getContext("2d");
+      const cropCanvas = document.querySelector(
+        ".cropCanvasClass"
+      ) as HTMLCanvasElement; // HTMLCanvasElement로 타입 단언
+      if (cropCanvas) {
+        const ctx = cropCanvas.getContext("2d");
         if (ctx) {
-          const croppedImage = cropCanvasRef.value.toDataURL(); // 잘라낸 이미지
-          previewImages.value = [croppedImage]; // 미리보기 이미지 업데이트
-          selectedImage.value = null; // 선택된 이미지 초기화
+          const croppedImage = cropCanvas.toDataURL();
+          previewImages.value = [croppedImage];
+          selectedImage.value = null;
         } else {
           message.value = "캔버스의 컨텍스트를 가져오는 데 실패했습니다.";
         }
@@ -118,7 +121,6 @@ export default defineComponent({
       handleImageUpload: () => handleImageUpload(selectedFiles, message),
       selectImage,
       cropImage,
-      cropCanvasRef,
       canvasWidth,
       canvasHeight,
     };
