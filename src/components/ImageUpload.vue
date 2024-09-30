@@ -7,15 +7,18 @@
       type="file"
       @change="handleFileChange"
       class="file-input mb-3 p-2 border border-gray-300 rounded-md w-full cursor-pointer"
+      multiple
     />
     <div
-      v-if="previewImage"
-      class="preview-container w-full h-40 mb-4 overflow-hidden items-center justify-center flex border-gray-300 rounded-md"
+      v-if="previewImages.length > 0"
+      class="preview-container w-full h-40 mb-4 flex overflow-hidden items-center justify-center border-gray-300 rounded-md"
     >
       <img
-        :src="previewImage"
+        v-for="(image, index) in previewImages"
+        :key="index"
+        :src="image"
         alt="미리보기 이미지"
-        class="w-full h-full object-cover"
+        class="w-1/3 h-full object-cover"
       />
     </div>
     <button
@@ -31,21 +34,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, Ref } from "vue";
 import { handleFileChange, handleImageUpload } from "../utils/imageUtils";
 
 export default defineComponent({
   setup() {
-    const selectedFile = ref<File | null>(null);
-    const previewImage = ref<string | null>(null);
-    const message = ref<string>("");
+    const selectedFiles: Ref<File[]> = ref([]); // 타입 정의
+    const previewImages: Ref<string[]> = ref([]); // 타입 정의
+    const message: Ref<string> = ref("");
 
     return {
-      previewImage,
+      previewImages,
       message,
       handleFileChange: (event: Event) =>
-        handleFileChange(event, selectedFile, previewImage, message),
-      handleImageUpload: () => handleImageUpload(selectedFile, message),
+        handleFileChange(event, selectedFiles, previewImages, message),
+      handleImageUpload: () => handleImageUpload(selectedFiles, message),
     };
   },
 });

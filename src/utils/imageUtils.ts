@@ -1,42 +1,53 @@
+import { uploadImageToBackend } from "@/services/api";
 import { Ref } from "vue";
-import { uploadImageToBackend } from "../services/api";
 
 export function handleFileChange(
   event: Event,
-  selectedFile: Ref<File | null>,
-  previewImage: Ref<string | null>,
+  selectedFiles: Ref<File[]>,
+  previewImages: Ref<string[]>,
   message: Ref<string>
 ) {
   const target = event.target as HTMLInputElement;
-  const file = target.files ? target.files[0] : null;
+  const files = target.files ? Array.from(target.files) : [];
 
-  // 이미지 미리보기
-  if (file && file.type.startsWith("image/")) {
-    selectedFile.value = file;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      previewImage.value = reader.result as string;
-    };
-  } else {
-    selectedFile.value = null;
-    previewImage.value = null;
-    message.value = "이미지 파일만 업로드 가능합니다.";
-  }
+  // 이미지 미리보기 초기화
+  previewImages.value = [];
+  selectedFiles.value = [];
+
+  files.forEach((file) => {
+    if (file.type.startsWith("image/")) {
+      selectedFiles.value.push(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        if (reader.result) {
+          previewImages.value.push(reader.result as string);
+        }
+      };
+    } else {
+      message.value = "이미지 파일만 업로드 가능합니다.";
+    }
+  });
 }
 
 export async function handleImageUpload(
-  selectedFile: Ref<File | null>,
+  selectedFiles: Ref<File[]>,
   message: Ref<string>
 ) {
-  if (!selectedFile.value) {
+  if (selectedFiles.value.length === 0) {
     message.value = "이미지를 선택해주세요.";
     return;
   }
 
+  const promises = selectedFiles.value.map((file) =>
+    uploadImageToBackend(file)
+  );
+
   try {
-    const response = await uploadImageToBackend(selectedFile.value);
-    message.value = response.data.message;
+    const responses = await Promise.all(promises);
+    message.value = responses
+      .map((response) => response.data.message)
+      .join(", ");
   } catch (error) {
     console.error("이미지 업로드 실패:", error);
     message.value = "이미지 업로드에 실패했습니다.";
