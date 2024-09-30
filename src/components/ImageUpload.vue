@@ -37,7 +37,7 @@
       @click="cropImage"
       class="crop-button bg-blue-600 text-white py-2 px-4 rounded-md mt-3 transition duration-300 hover:bg-blue-700"
     >
-      이미지 자르기
+      이미지 편집하기
     </button>
 
     <button
