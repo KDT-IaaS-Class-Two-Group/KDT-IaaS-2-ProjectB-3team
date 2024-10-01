@@ -9,6 +9,10 @@
 </template>
 
 <script lang="ts">
+/**
+ * @yuxincxoi 24.10.01
+ * * 장소, 주소 검색창
+ */
 import { defineComponent } from "vue";
 import { locationStatic } from "@/static/components/location/location.static";
 
