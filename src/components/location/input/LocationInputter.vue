@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <p>Location input</p>
+  <div class="flex justify-center">
+    <input type="input" />
   </div>
 </template>
 
