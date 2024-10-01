@@ -4,6 +4,8 @@
   </div>
 </template>
 
+<!-- todo_1 : ts로 변환 후, kakao 인식할 수 있도록 에러 처리 -->
+<!-- todo_2 : API url 환경변수 설정 -->
 <script>
 /**
  * @yuxincxoi 24.10.01
