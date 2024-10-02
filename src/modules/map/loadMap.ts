@@ -5,17 +5,29 @@ import { initMap } from "./initMap";
  * * 카카오맵 API 동적으로 로드
  */
 export const loadMap = () => {
-  const mapScript = document.createElement("script");
+  return new Promise<typeof window.kakao.maps>((resolve, reject) => {
+    if (window.kakao && window.kakao.maps) {
+      resolve(window.kakao.maps);
+      return;
+    }
 
-  // todo : API url 환경변수 설정
-  mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.VUE_APP_API_KEY}&autoload=false&libraries=services,clusterer,drawing`;
+    const mapScript = document.createElement("script");
 
-  // 지도 로드된 후 생성
-  mapScript.onload = () => {
-    window.kakao.maps.load(() => {
-      initMap();
-    });
-  };
+    // todo : API url 환경변수 설정
+    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.VUE_APP_API_KEY}&autoload=false&libraries=services,clusterer,drawing`;
 
-  document.head.appendChild(mapScript);
+    // 지도 로드된 후 생성
+    mapScript.onload = () => {
+      if (window.kakao && window.kakao.maps) {
+        window.kakao.maps.load(() => {
+          initMap();
+          resolve(window.kakao.maps);
+        });
+      } else {
+        reject(new Error("Kakao Maps API가 로드되지 않았습니다."));
+      }
+    };
+
+    document.head.appendChild(mapScript);
+  });
 };
