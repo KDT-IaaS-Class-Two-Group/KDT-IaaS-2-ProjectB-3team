@@ -10,13 +10,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref } from "vue";
+import { locationStatic } from "@/static/components/location/location.static";
+
 /**
  * @yuxincxoi 24.10.01
  * * 장소, 주소 검색창
  */
-import { defineComponent, ref } from "vue";
-import { locationStatic } from "@/static/components/location/location.static";
-
 export default defineComponent({
   data() {
     return {

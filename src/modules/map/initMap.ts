@@ -1,3 +1,7 @@
+/**
+ * @yuxincxoi 24.10.02
+ * * 지도 생성
+ */
 export const initMap = () => {
   try {
     if (!window.kakao || !window.kakao.maps) {
