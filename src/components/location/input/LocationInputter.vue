@@ -6,6 +6,12 @@
       v-model="searchValue"
       class="w-[500px] h-10 rounded-2xl border-2 px-4 my-6 hover:border-main-color focus:outline-none focus:border-main-color"
     />
+    <button
+      @click="searchPlace"
+      class="h-10 px-4 my-6 ml-4 bg-main-color text-white rounded-2xl"
+    >
+      Search
+    </button>
   </div>
 </template>
 
@@ -40,6 +46,7 @@ export default defineComponent({
 
     return {
       searchValue,
+      searchPlace,
     };
   },
 });
