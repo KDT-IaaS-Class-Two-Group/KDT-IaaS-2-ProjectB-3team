@@ -13,8 +13,6 @@
 import { defineComponent, ref } from "vue";
 import { locationStatic } from "@/static/components/location/location.static";
 import { loadMap } from "@/modules/map/loadMap";
-import IResult from "@/interfaces/components/location/input/result.interface";
-import IStatus from "@/interfaces/components/location/input/status.interface";
 
 /**
  * @yuxincxoi 24.10.01
@@ -33,14 +31,11 @@ export default defineComponent({
       const map = await loadMap();
       const places = new map.services.Places();
 
-      places.keywordSearch(
-        searchValue.value,
-        (result: IResult, status: IStatus) => {
-          if (status === map.services.Status.OK) {
-            console.log(result);
-          }
+      places.keywordSearch(searchValue.value, (result, status) => {
+        if (status === map.services.Status.OK) {
+          console.log(result);
         }
-      );
+      });
     };
 
     return {
