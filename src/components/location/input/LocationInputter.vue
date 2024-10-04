@@ -35,11 +35,18 @@ export default defineComponent({
 
     const searchPlace = async () => {
       try {
-        const map = await loadMap();
-        const places = new map.services.Places();
+        const kakaoMaps = await loadMap();
+        const map = new kakaoMaps.Map(
+          document.getElementById("map") as HTMLElement,
+          {
+            center: new kakaoMaps.LatLng(37.5665, 126.978),
+            level: 3,
+          }
+        );
+        const places = new kakaoMaps.services.Places();
 
         places.keywordSearch(searchValue.value, (result, status) => {
-          if (status === map.services.Status.OK) {
+          if (status === kakaoMaps.services.Status.OK) {
             console.log(result);
           }
         });
