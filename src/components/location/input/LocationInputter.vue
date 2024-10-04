@@ -57,6 +57,7 @@ export default defineComponent({
                 map: map,
                 position: coords,
               });
+              bounds.extend(coords);
             });
           }
         });
