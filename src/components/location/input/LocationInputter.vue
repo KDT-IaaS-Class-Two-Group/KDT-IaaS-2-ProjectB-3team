@@ -53,6 +53,10 @@ export default defineComponent({
                 Number(place.y),
                 Number(place.x)
               );
+              const marker = new kakaoMaps.Marker({
+                map: map,
+                position: coords,
+              });
             });
           }
         });
