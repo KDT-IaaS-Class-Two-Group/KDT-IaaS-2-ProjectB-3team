@@ -34,14 +34,18 @@ export default defineComponent({
     const searchValue = ref("");
 
     const searchPlace = async () => {
-      const map = await loadMap();
-      const places = new map.services.Places();
+      try {
+        const map = await loadMap();
+        const places = new map.services.Places();
 
-      places.keywordSearch(searchValue.value, (result, status) => {
-        if (status === map.services.Status.OK) {
-          console.log(result);
-        }
-      });
+        places.keywordSearch(searchValue.value, (result, status) => {
+          if (status === map.services.Status.OK) {
+            console.log(result);
+          }
+        });
+      } catch (error) {
+        throw new Error("맵 로딩 실패");
+      }
     };
 
     return {
