@@ -1,6 +1,7 @@
 <template>
   <div class="flex justify-center">
     <input
+      @keypress="handleKeyPress"
       :type="locationStatic.inputType"
       :placeholder="locationStatic.inputPlaceholder"
       v-model="searchValue"
@@ -31,6 +32,12 @@ export default defineComponent({
     };
   },
   setup() {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        searchPlace();
+      }
+    };
+
     const searchValue = ref("");
 
     const searchPlace = async () => {
@@ -72,6 +79,7 @@ export default defineComponent({
     return {
       searchValue,
       searchPlace,
+      handleKeyPress,
     };
   },
 });
