@@ -60,6 +60,8 @@ export default defineComponent({
               bounds.extend(coords);
             });
             map.setBounds(bounds);
+          } else {
+            throw new Error("검색 결과가 없습니다.");
           }
         });
       } catch (error) {
