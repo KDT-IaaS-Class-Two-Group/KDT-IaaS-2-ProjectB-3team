@@ -12,9 +12,7 @@
     "useDefineForClassFields": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "webpack-env"
-    ],
+    "types": ["webpack-env", "kakao.maps.d.ts"],
     "paths": {
       "@/*": [
         "src/*"
