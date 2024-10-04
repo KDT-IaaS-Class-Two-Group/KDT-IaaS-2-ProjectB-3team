@@ -1,5 +1,10 @@
 import { loadMap } from "@/modules/map/loadMap";
 
+/**
+ * @yuxincxoi 24.10.03
+ * * 장소 검색 기능
+ * @param searchValue - 검색어
+ */
 export const searchPlace = async (searchValue: string) => {
   try {
     const kakaoMaps = await loadMap();
