@@ -48,7 +48,12 @@ export default defineComponent({
         const bounds = new kakaoMaps.LatLngBounds();
         places.keywordSearch(searchValue.value, (result, status) => {
           if (status === kakaoMaps.services.Status.OK) {
-            console.log(result);
+            result.forEach((place) => {
+              const coords = new kakaoMaps.LatLng(
+                Number(place.y),
+                Number(place.x)
+              );
+            });
           }
         });
       } catch (error) {
