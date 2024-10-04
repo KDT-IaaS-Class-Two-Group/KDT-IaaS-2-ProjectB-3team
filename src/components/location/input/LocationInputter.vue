@@ -45,6 +45,7 @@ export default defineComponent({
         );
         const places = new kakaoMaps.services.Places();
 
+        const bounds = new kakaoMaps.LatLngBounds();
         places.keywordSearch(searchValue.value, (result, status) => {
           if (status === kakaoMaps.services.Status.OK) {
             console.log(result);
