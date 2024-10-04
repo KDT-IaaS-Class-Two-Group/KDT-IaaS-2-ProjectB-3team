@@ -32,14 +32,17 @@ export default defineComponent({
     };
   },
   setup() {
+    // enter를 이용해 검색할 수 있도록하는 이벤트
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         searchPlace(searchValue.value);
       }
     };
 
+    // 검색어
     const searchValue = ref("");
 
+    // 검색 이벤트
     const searchPlaceHandler = () => {
       searchPlace(searchValue.value);
     };
