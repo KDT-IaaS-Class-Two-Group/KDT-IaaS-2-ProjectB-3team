@@ -59,6 +59,7 @@ export default defineComponent({
               });
               bounds.extend(coords);
             });
+            map.setBounds(bounds);
           }
         });
       } catch (error) {
