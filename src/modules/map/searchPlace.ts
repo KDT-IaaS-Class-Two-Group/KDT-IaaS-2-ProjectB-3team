@@ -71,6 +71,11 @@ export const searchPlace = async (searchValue: string) => {
             fillOpacity: 0.6, // 채우기 불투명도
           });
 
+          // 마커 클릭했을 때 위험반경 표시
+          kakaoMaps.event.addListener(marker, "click", () => {
+            circle.setMap(map);
+          });
+
           // 장소를 지도에 표시하도록 범위 확장
           bounds.extend(coords);
         });
