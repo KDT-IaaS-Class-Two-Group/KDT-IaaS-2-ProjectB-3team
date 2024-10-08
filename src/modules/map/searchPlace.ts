@@ -42,6 +42,7 @@ export const searchPlace = async (searchValue: string) => {
               <div>${place.road_address_name}</div>
             </div>
           `;
+          const iwRemovable = true;
 
           kakaoMaps.event.addListener(marker, "click", () =>
             console.log(place.x, place.y, place.place_name)
