@@ -34,14 +34,14 @@ export const searchPlace = async (searchValue: string) => {
           });
 
           const iwContent = `
-            <div>
-              <div>${place.place_name}</div>
-              <div>${place.category_name.slice(
-                place.category_name.lastIndexOf(" ") + 1
-              )}</div>
-              <div>${place.road_address_name}</div>
-            </div>
-          `;
+          <div class="m-2 px-1 w-48">
+            <div class="text-lg font-semibold">${place.place_name}</div>
+            <div class="text-slate-400 text-sm">${place.category_name.slice(
+              place.category_name.lastIndexOf(" ") + 1
+            )}</div>
+            <div class="text-sm">${place.road_address_name}</div>
+          </div>
+        `;
           const iwRemovable = true;
 
           const InfoWindow = new kakaoMaps.InfoWindow({
