@@ -33,6 +33,16 @@ export const searchPlace = async (searchValue: string) => {
             clickable: true, // 마커를 클릭 시 지도의 클릭이벤트 발생하지 않도록 설정
           });
 
+          const iwContent = `
+            <div>
+              <div>${place.place_name}</div>
+              <div>${place.category_name.slice(
+                place.category_name.lastIndexOf(" ") + 1
+              )}</div>
+              <div>${place.road_address_name}</div>
+            </div>
+          `;
+
           kakaoMaps.event.addListener(marker, "click", () =>
             console.log(place.x, place.y, place.place_name)
           );
