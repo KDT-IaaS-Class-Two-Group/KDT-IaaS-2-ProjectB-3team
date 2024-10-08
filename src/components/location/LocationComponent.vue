@@ -11,6 +11,10 @@ import { defineComponent } from "vue";
 import MapDisplayer from "./map/MapDisplayer.vue";
 import LocationInputter from "./input/LocationInputter.vue";
 
+/**
+ * @yuxincxoi 24.10.01
+ * * 지도 컴포넌트 + 검색창 컴포넌트
+ */
 export default defineComponent({
   name: "LocationComponent",
   components: {
