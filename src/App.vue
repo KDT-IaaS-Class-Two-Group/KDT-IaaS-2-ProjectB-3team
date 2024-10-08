@@ -8,6 +8,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import ImageUpload from "./components/ImageUpload.vue";
+import "./tailwind.css";
 
 export default defineComponent({
   name: "App",
