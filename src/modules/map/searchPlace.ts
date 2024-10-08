@@ -59,6 +59,18 @@ export const searchPlace = async (searchValue: string) => {
             InfoWindow.close();
           });
 
+          // 지도에 표시할 원 생성
+          const circle = new kakaoMaps.Circle({
+            center: coords, // 원의 중심
+            radius: 15000, // 원의 반지름
+            strokeWeight: 0.8, // 선의 두께
+            strokeColor: "#FF4141", // 선의 색
+            strokeOpacity: 1, // 선의 불투명도
+            strokeStyle: "solid", // 선의 스타일
+            fillColor: "#FF9B9B", // 채우기 색
+            fillOpacity: 0.6, // 채우기 불투명도
+          });
+
           // 장소를 지도에 표시하도록 범위 확장
           bounds.extend(coords);
         });
