@@ -51,9 +51,12 @@ export const searchPlace = async (searchValue: string) => {
             removable: iwRemovable,
           });
 
-          // 마커를 클릭했을 때 인포윈도우 생성
-          kakaoMaps.event.addListener(marker, "click", () => {
+          // 마커에 mouse over(out) 했을 때 인포윈도우 생성(닫기)
+          kakaoMaps.event.addListener(marker, "mouseover", () => {
             InfoWindow.open(map, marker);
+          });
+          kakaoMaps.event.addListener(marker, "mouseout", () => {
+            InfoWindow.close();
           });
 
           // 장소를 지도에 표시하도록 범위 확장
