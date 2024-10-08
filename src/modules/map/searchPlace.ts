@@ -21,9 +21,9 @@ export const searchPlace = async (searchValue: string) => {
     // 지도 표시 범위 관리하는 객체 생성
     const bounds = new kakaoMaps.LatLngBounds();
     // 검색어로 장소 검색
-    places.keywordSearch(searchValue, (result, status) => {
+    places.keywordSearch(searchValue, (result: any, status: any) => {
       if (status === kakaoMaps.services.Status.OK) {
-        result.forEach((place) => {
+        result.forEach((place: any) => {
           // 장소의 좌표 생성
           const coords = new kakaoMaps.LatLng(Number(place.y), Number(place.x));
           // 장소에 마커 생성

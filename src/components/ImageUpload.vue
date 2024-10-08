@@ -33,9 +33,7 @@
       v-if="isModalOpen"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
-      <div
-        class="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full text-center"
-      >
+      <div class="bg-white rounded-lg p-6 shadow-lg w-2/3 text-center">
         <h3 class="text-lg font-semibold mb-4">
           제보하신 동물은 ‘고라니’입니다. 제보하시겠습니까?
         </h3>
@@ -122,7 +120,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-/* 추가 스타일 필요시 여기에 작성 */
-</style>
