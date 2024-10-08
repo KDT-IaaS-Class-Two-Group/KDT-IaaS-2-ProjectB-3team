@@ -44,9 +44,14 @@ export const searchPlace = async (searchValue: string) => {
           `;
           const iwRemovable = true;
 
-          kakaoMaps.event.addListener(marker, "click", () =>
-            console.log(place.x, place.y, place.place_name)
-          );
+          const InfoWindow = new kakaoMaps.InfoWindow({
+            content: iwContent,
+            removable: iwRemovable,
+          });
+
+          kakaoMaps.event.addListener(marker, "click", () => {
+            InfoWindow.open(map, marker);
+          });
 
           // 장소를 지도에 표시하도록 범위 확장
           bounds.extend(coords);
