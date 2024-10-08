@@ -30,6 +30,7 @@ export const searchPlace = async (searchValue: string) => {
           const marker = new kakaoMaps.Marker({
             map: map, // 마커를 표시할 지도
             position: coords, // 마커의 좌표
+            clickable: true, // 마커를 클릭 시 지도의 클릭이벤트 발생하지 않도록 설정
           });
           // 장소를 지도에 표시하도록 범위 확장
           bounds.extend(coords);
