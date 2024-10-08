@@ -33,6 +33,7 @@ export const searchPlace = async (searchValue: string) => {
             clickable: true, // 마커를 클릭 시 지도의 클릭이벤트 발생하지 않도록 설정
           });
 
+          // 인포윈도우 내용 - 장소명, 장소 카테고리, 주소
           const iwContent = `
           <div class="m-2 px-1 w-48">
             <div class="text-lg font-semibold">${place.place_name}</div>
@@ -42,13 +43,15 @@ export const searchPlace = async (searchValue: string) => {
             <div class="text-sm">${place.road_address_name}</div>
           </div>
         `;
-          const iwRemovable = true;
+          const iwRemovable = true; // 인포윈도우 닫기 버튼 생성
 
+          // 인포윈도우 생성
           const InfoWindow = new kakaoMaps.InfoWindow({
             content: iwContent,
             removable: iwRemovable,
           });
 
+          // 마커를 클릭했을 때 인포윈도우 생성
           kakaoMaps.event.addListener(marker, "click", () => {
             InfoWindow.open(map, marker);
           });
