@@ -1,4 +1,4 @@
-import { uploadImageToBackend } from "@/services/api";
+import { uploadImageToBackend, uploadImageToML } from "@/services/api";
 import { Ref } from "vue";
 
 export function handleFileChange(
@@ -39,9 +39,13 @@ export async function handleImageUpload(
     return;
   }
 
-  const promises = selectedFiles.value.map((file) =>
-    uploadImageToBackend(file)
-  );
+  // 여기에 uploadImageToBackend와 uploadImageToML를 모두 사용
+  const promises = selectedFiles.value.map((file) => {
+    // 원하는 대로 두 개의 함수 중 하나를 선택하세요.
+    return uploadImageToML(file); // 머신러닝 모델에 업로드
+    // 또는
+    return uploadImageToBackend(file); // 일반 백엔드에 업로드
+  });
 
   try {
     const responses = await Promise.all(promises);
