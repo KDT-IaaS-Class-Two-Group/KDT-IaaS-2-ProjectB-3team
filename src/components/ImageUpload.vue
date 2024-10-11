@@ -9,119 +9,77 @@
       class="file-input mb-3 p-2 border border-gray-300 rounded-md w-full cursor-pointer"
       multiple
     />
-
-    <div
-      v-if="previewImages.length > 0"
-      class="preview-container max-w-3xl mb-4 flex overflow-hidden items-center justify-center border-gray-300 rounded-md relative"
-    >
-      <img
-        v-for="(image, index) in previewImages"
-        :key="index"
-        :src="image"
-        alt="미리보기 이미지"
-        class="w-1/3 h-full object-cover"
-        @click="selectImage(index)"
-      />
-    </div>
-
-    <canvas
-      v-if="selectedImage"
-      ref="cropCanvas"
-      :width="canvasWidth"
-      :height="canvasHeight"
-      class="border border-gray-300 mb-4 max-w-2xl"
-    ></canvas>
-
     <button
-      v-if="selectedImage"
-      @click="cropImage"
-      class="crop-button bg-blue-600 text-white py-2 px-4 rounded-md mt-3 transition duration-300 hover:bg-blue-700"
-    >
-      이미지 편집하기
-    </button>
-
-    <button
-      @click="handleImageUpload"
+      @click="uploadImage"
       class="upload-button bg-green-600 text-white py-2 px-4 rounded-md mt-3 transition duration-300 hover:bg-green-700"
     >
       업로드
     </button>
-
     <p v-if="message" class="upload-message mt-4 text-sm text-red-500">
       {{ message }}
     </p>
+
+    <!-- 모달 구현 -->
+    <div
+      v-if="isModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg p-6 shadow-lg w-2/3 text-center">
+        <h3 class="text-lg font-semibold mb-4">
+          제보하신 동물은 ‘고라니’입니다. 제보하시겠습니까?
+        </h3>
+
+        <!-- LocationComponent 추가 -->
+        <LocationComponent />
+
+        <div class="flex justify-center gap-4 mt-4">
+          <button
+            @click="confirmReport"
+            class="bg-green-600 text-white py-2 px-4 rounded-md transition duration-300 hover:bg-green-700"
+          >
+            제보하기
+          </button>
+          <button
+            @click="closeReportModal"
+            class="bg-red-600 text-white py-2 px-4 rounded-md transition duration-300 hover:bg-red-700"
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue";
-import { handleFileChange, handleImageUpload } from "../utils/imageUtils";
+import { defineComponent } from "vue";
+import { uploadImageToBackend } from "../services/api";
 
 export default defineComponent({
-  setup() {
-    const selectedFiles: Ref<File[]> = ref([]);
-    const previewImages: Ref<string[]> = ref([]);
-    const selectedImage: Ref<string | null> = ref(null);
-    const message: Ref<string> = ref("");
-    const cropCanvasRef = ref<HTMLCanvasElement | null>(null); // null 타입 포함
-    const canvasWidth = 800; // 캔버스 너비
-    const canvasHeight = 600; // 캔버스 높이
-
-    const selectImage = (index: number) => {
-      selectedImage.value = previewImages.value[index];
-
-      // 이미지 객체 생성 후 onload에서 drawImageOnCropCanvas 실행
-      const img = new Image();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      img.src = selectedImage.value!;
-      img.onload = () => {
-        drawImageOnCropCanvas(img);
-      };
-    };
-
-    const drawImageOnCropCanvas = (img: HTMLImageElement) => {
-      if (cropCanvasRef.value) {
-        const ctx = cropCanvasRef.value.getContext("2d");
-        if (ctx) {
-          // 캔버스 초기화 및 이미지 그리기
-          ctx.clearRect(0, 0, canvasWidth, canvasHeight); // 기존 캔버스 내용 지우기
-          cropCanvasRef.value.width = canvasWidth;
-          cropCanvasRef.value.height = canvasHeight;
-          ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-        } else {
-          message.value = "캔버스의 컨텍스트를 가져오지 못했습니다.";
-        }
-      }
-    };
-
-    const cropImage = () => {
-      if (cropCanvasRef.value) {
-        const ctx = cropCanvasRef.value.getContext("2d");
-        if (ctx) {
-          const croppedImage = cropCanvasRef.value.toDataURL(); // 잘라낸 이미지
-          previewImages.value = [croppedImage]; // 미리보기 이미지 업데이트
-          selectedImage.value = null; // 선택된 이미지 초기화
-        } else {
-          message.value = "캔버스의 컨텍스트를 가져오는 데 실패했습니다.";
-        }
-      } else {
-        message.value = "캔버스가 초기화되지 않았습니다.";
-      }
-    };
-
+  data() {
     return {
-      previewImages,
-      selectedImage,
-      message,
-      handleFileChange: (event: Event) =>
-        handleFileChange(event, selectedFiles, previewImages, message),
-      handleImageUpload: () => handleImageUpload(selectedFiles, message),
-      selectImage,
-      cropImage,
-      cropCanvasRef,
-      canvasWidth,
-      canvasHeight,
+      selectedFile: null as File | null, // 파일 타입 명시
+      message: "" as string, // 문자열 타입 명시
     };
+  },
+  methods: {
+    onFileChange(event: Event) {
+      const target = event.target as HTMLInputElement;
+      this.selectedFile = target.files ? target.files[0] : null; // 파일 선택 처리
+    },
+    async uploadImage() {
+      if (!this.selectedFile) {
+        this.message = "이미지를 선택해주세요.";
+        return;
+      }
+      try {
+        const response = await uploadImageToBackend(this.selectedFile);
+        this.message = response.data.message; // 백엔드에서 반환된 메시지 처리
+      } catch (error) {
+        console.error("이미지 업로드 실패:", error);
+        this.message = "이미지 업로드에 실패했습니다.";
+      }
+    },
   },
 });
 </script>
